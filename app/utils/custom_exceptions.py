@@ -37,3 +37,7 @@ class BaseAPIException(Exception):
 
 class BadRequestAPIException(BaseAPIException):
     status_code = 400
+
+
+class UnauthorizedAPIException(BaseAPIException):
+    status_code = 401

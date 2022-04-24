@@ -2,10 +2,8 @@ import os
 
 from flask import g
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.ext.horizontal_shard import ShardedSession
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
-from sqlalchemy.orm import Session
 
 Base = declarative_base()
 
@@ -65,6 +63,10 @@ class BaseConfig:
     def _setup_postgres_services(self):
         from app.services.user.user_service import UserService
         from app.services.department.department_service import DepartmentService
+        from app.services.building.building_service import BuildingService
+        from app.services.room.room_service import RoomService
 
         self.USER_SERVICE = UserService()
         self.DEPARTMENT_SERVICE = DepartmentService()
+        self.ROOM_SERVICE = RoomService()
+        self.BUILDING_SERVICE = BuildingService()

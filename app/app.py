@@ -7,7 +7,7 @@ from flask_cors import CORS
 
 from flask import request, session, request_finished, g
 
-from app.utils.custom_exceptions import BadRequestAPIException
+from app.utils.custom_exceptions import BadRequestAPIException, UnauthorizedAPIException
 from configs.run_config import CONFIG
 
 app = Main().create_app()
@@ -15,13 +15,18 @@ app = Main().create_app()
 # cors = CORS(app, supports_credentials=True, origins=r"(.*){0}".format(CONFIG.UI_HOST))
 
 
-
 @app.before_request
 def before_request():
     g.tenant_host = os.environ.get('DB_HOST')
-    b = 12
+
+    token = request.headers.get("Authorization-token")
+    user = CONFIG.USER_SERVICE.fetch(authorization_token=token)
+
+    if not user and request.path not in ['/users/login']:
+        raise UnauthorizedAPIException()
     # g.request_data = {**(request.args.to_dict() or {}), **(request.get_json() or {}), **(request.view_args or {})}
-    a = 1
+    # a = request.get_json()
+    # g.request_data = {**(request.get_json() or {})}
 
 
 @app.errorhandler(KeyError)
@@ -59,6 +64,13 @@ def exception(exception):
 
 @app.errorhandler(BadRequestAPIException)
 def handle_400(error):
+    response = jsonify(error.to_dict())
+    response.status_code = error.status_code
+    return response
+
+
+@app.errorhandler(UnauthorizedAPIException)
+def handle_401(error):
     response = jsonify(error.to_dict())
     response.status_code = error.status_code
     return response

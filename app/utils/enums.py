@@ -23,3 +23,7 @@ class DepartmentEnum(BaseEnum):
 
 class ErrorCodes(BaseEnum):
     department_id_not_found = 'The department id is invalid'
+    email_not_found = 'Email not found'
+    unauthorized = 'Unauthorized'
+    email_already_exist = 'Email already exist'
+    user_not_found = 'User not found'
