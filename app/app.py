@@ -1,11 +1,11 @@
 import os
 import traceback
 
-from flask import Flask, jsonify
+from flask import jsonify
 from app.main import Main
 from flask_cors import CORS
 
-from flask import request, session, request_finished, g
+from flask import request, g
 
 from app.utils.custom_exceptions import BadRequestAPIException, UnauthorizedAPIException
 from configs.run_config import CONFIG
@@ -24,9 +24,6 @@ def before_request():
 
     if not user and request.path not in ['/users/login']:
         raise UnauthorizedAPIException()
-    # g.request_data = {**(request.args.to_dict() or {}), **(request.get_json() or {}), **(request.view_args or {})}
-    # a = request.get_json()
-    # g.request_data = {**(request.get_json() or {})}
 
 
 @app.errorhandler(KeyError)
@@ -82,6 +79,5 @@ def hello_world():
 
 
 if __name__ == '__main__':
-    # manager.run()
     app.run()
 

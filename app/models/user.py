@@ -17,6 +17,7 @@ class User(Base):
     middle_name_native = Column(String)
     room_id = Column(Integer, ForeignKey('room.id'))
     building_id = Column(Integer, ForeignKey('building.id'))
+    project_id = Column(Integer, ForeignKey('project.id'))
     email = Column(String)
     mobile_phone = Column(Integer)
     is_admin = Column(Boolean, default=False)
@@ -24,6 +25,7 @@ class User(Base):
     department_id = Column(Integer, ForeignKey('department.id'))
     authorization_token = Column(String)
     manager_id = Column(Integer)
+    hire_date = Column(DateTime)
 
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.datetime.utcnow)

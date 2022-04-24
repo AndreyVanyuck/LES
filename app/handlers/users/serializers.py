@@ -20,6 +20,7 @@ class UserSerializer(ValidationForm):
     department = fields.Method('get_department')
     is_manager = fields.Boolean()
     manager = fields.Method('get_manager')
+    hire_date = fields.DateTime(format='%Y-%m-%d %H:%M:%S')
 
     def get_department(self, obj):
         departments = self.context.get('departments', [])
