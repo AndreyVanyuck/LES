@@ -1,0 +1,16 @@
+import datetime
+
+from sqlalchemy import Column, String, DateTime, BIGINT
+
+
+from configs.base import Base
+
+
+class Department(Base):
+    __tablename__ = 'department'
+
+    id = Column(BIGINT, autoincrement=True, primary_key=True)
+    name = Column(String)
+
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.datetime.utcnow)

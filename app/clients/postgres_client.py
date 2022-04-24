@@ -59,9 +59,9 @@ class PostgresClient:
                             Load(self.model).joinedload(relationship).load_only(*load)
                         )
 
-            queryset = self.pg_db.session.query(self.model).options(*strategies)
+            queryset = self.pg_db.query(self.model).options(*strategies)
         else:
-            queryset = self.pg_db.session.query(self.model)
+            queryset = self.pg_db.query(self.model)
 
         return queryset
 
@@ -192,7 +192,7 @@ class PostgresClient:
         return self._filter_queryset(*args, **kwargs).count()
 
     def exists(self, *args, **kwargs):
-        return self.pg_db.session.query(self._get_queryset(*args, **kwargs).exists()).scalar()
+        return self.pg_db.query(self._get_queryset(*args, **kwargs).exists()).scalar()
 
     def fetch(self, *args, **kwargs):
         return self._get_queryset(*args, **kwargs).first()
@@ -206,18 +206,18 @@ class PostgresClient:
     def create(self, **kwargs):
         instance = self.model(**kwargs)
 
-        self.pg_db.session.add(instance)
-        self.pg_db.session.flush()
+        self.pg_db.add(instance)
+        self.pg_db.flush()
 
         return instance
 
     def update(self, pk: int, **kwargs):
-        self.pg_db.session.query(self.model).filter(self.model.id == pk).update(kwargs)
-        self.pg_db.session.flush()
+        self.pg_db.query(self.model).filter(self.model.id == pk).update(kwargs)
+        self.pg_db.flush()
 
     def delete(self, pk: int, **kwargs):
-        self.pg_db.session.query(self.model).filter(self.model.id == pk).delete()
-        self.pg_db.session.flush()
+        self.pg_db.query(self.model).filter(self.model.id == pk).delete()
+        self.pg_db.flush()
 
     def bulk_create(self, mappings: List[Dict]):
         engine = self.pg_db.session.get_bind(mapper=None, shard_id=g.tenant_host)
@@ -248,7 +248,7 @@ class PostgresClient:
         session.close()
 
     def commit(self):
-        self.pg_db.session.commit()
+        self.pg_db.commit()
 
     def get_ddl(self):
         table_name = self.model.__tablename__

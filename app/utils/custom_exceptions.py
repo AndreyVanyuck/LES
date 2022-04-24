@@ -1,5 +1,7 @@
 from typing import Dict, Iterable
 
+from app.utils.enums import ErrorCodes
+
 
 class BaseAPIException(Exception):
     status_code = 500

@@ -5,6 +5,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.horizontal_shard import ShardedSession
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
 
 Base = declarative_base()
 
@@ -12,52 +13,24 @@ Base = declarative_base()
 class ShardedConnection:
 
     def __init__(self):
-        self.create_session = sessionmaker(class_=ShardedSession)
-        tenant_shards = os.environ.get('DB_HOST').split(",")
-        shards = {}
-        tenant_user = os.environ.get('DB_NAME')
-        tenant_pass = os.environ.get('DB_NAME')
+        tenant_shard = os.environ.get('DB_HOST')
+        tenant_user = os.environ.get('DB_USER')
+        tenant_pass = os.environ.get('DB_PASSWORD')
         tenant_db = os.environ.get('DB_NAME')
         tenant_port = os.environ.get('DB_PORT', '5432')
-        for tenant_shard in tenant_shards:
-            shards[tenant_shard] = create_engine(
-                f"postgresql+psycopg2://{tenant_user}:{tenant_pass}@{tenant_shard}:{tenant_port}/{tenant_db}",
-                pool_size=10,
-                max_overflow=2,
-                pool_recycle=300,
-                pool_pre_ping=True,
-                pool_use_lifo=True
-            )
-
-        self.create_session.configure(
-            shards=shards
+        self.db = create_engine(
+            f"postgresql+psycopg2://{tenant_user}:{tenant_pass}@{tenant_shard}:{tenant_port}/{tenant_db}",
+            pool_size=10,
+            max_overflow=2,
+            pool_recycle=300,
+            pool_pre_ping=True,
+            pool_use_lifo=True
         )
 
-        self.create_session.configure(
-            shard_chooser=self.__shard_chooser,
-            id_chooser=self.__id_chooser,
-            query_chooser=self.__query_chooser
-        )
-
-    @staticmethod
-    def __shard_chooser(mapper, instance, clause=None):
-        if mapper and getattr(mapper.class_, '__bind_key__', None):
-            return mapper.class_.__bind_key__
-        return g.tenant_host
-
-    @staticmethod
-    def __id_chooser(query, ids):
-        return ShardedConnection.__query_chooser(query)
-
-    @staticmethod
-    def __query_chooser(query):
-        binds = set()
-        for mapper in query._mapper_adapter_map.values():
-            binds.add(ShardedConnection.__shard_chooser(*mapper))
-            if len(binds) > 1:
-                raise Exception("Unable to run a query across dbs: {', '.join(binds)}")
-            return list(binds)
-        return [g.tenant_host]
+    def create_session(self):
+        session = sessionmaker(self.db, autocommit=True)
+        session = session()
+        return session
 
     @property
     def session(self):
@@ -70,9 +43,7 @@ class ShardedConnection:
 
 class BaseConfig:
     def __init__(self, *args, **kwargs):
-        super(BaseConfig, self).__init__()
-
-        self.PG_DB = ShardedConnection()
+        self.PG_DB = ShardedConnection().create_session()
 
         self.UI_HOST = os.environ.get('UI_HOST')
 
@@ -88,12 +59,12 @@ class BaseConfig:
             port=self.DB_PORT,
             database=self.DB_NAME)
 
+    def setup_services(self):
         self._setup_postgres_services()
-
-    @staticmethod
-    def setup_services():
-        pass
 
     def _setup_postgres_services(self):
         from app.services.user.user_service import UserService
+        from app.services.department.department_service import DepartmentService
+
         self.USER_SERVICE = UserService()
+        self.DEPARTMENT_SERVICE = DepartmentService()

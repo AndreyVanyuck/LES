@@ -1,30 +1,40 @@
-from flask import g, Blueprint
+from flask import Blueprint, request
 
 from app.handlers.users.forms import UserForm
+from app.handlers.users.serializers import UserResponseSerializer
+
 from app.main import CONFIG
+from app.utils.response_formatting import response
 
-USER_BLUEPRINT = Blueprint('user', __name__)
+USERS_BLUEPRINT = Blueprint('user', __name__)
 
 
-@USER_BLUEPRINT.route("/user/create", methods=['POST'])
+@USERS_BLUEPRINT.route("/users/create", methods=['POST'])
 def create_user():
-    form = UserForm().load(g.request_data)
-
+    form = UserForm().load(request.get_json())
     service = CONFIG.USER_SERVICE
-    serializer = CampaignListResponseSerializer()
+    serializer = UserResponseSerializer()
 
-    if 'external_id_list' in form.keys():
-        external_id_list = form.pop('external_id_list')
-        form['in_and_'] = {'external_id': [str(_) for _ in external_id_list.split(',')]}
+    form['is_admin'] = False
+    instances = service.create(**form)
 
-    instances = service.fetch_all(**form)
-
-    serializer.context = {
-        'online_metrics': CONFIG.CAMPAIGN_ONLINE_METRICS_SERVICE.fetch(
-            in_={'campaign_id': [_.external_id for _ in instances if _.external_id]})
-    }
     result = serializer.dump({
-        'total_count': service.count(**form),
+        'total_count': 1,
+        'instances': [instances]
+    })
+
+    return response(result)
+
+
+@USERS_BLUEPRINT.route("/users", methods=['GET'])
+def get_users():
+    service = CONFIG.USER_SERVICE
+    serializer = UserResponseSerializer()
+
+    instances = service.fetch_all()
+
+    result = serializer.dump({
+        'total_count': len(instances),
         'instances': instances
     })
 
