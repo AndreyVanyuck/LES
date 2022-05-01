@@ -59,14 +59,33 @@ class BaseConfig:
 
     def setup_services(self):
         self._setup_postgres_services()
+        self._setup_vacation_day_calculation_services()
 
     def _setup_postgres_services(self):
         from app.services.user.user_service import UserService
         from app.services.department.department_service import DepartmentService
         from app.services.building.building_service import BuildingService
         from app.services.room.room_service import RoomService
+        from app.services.request.request_service import RequestService
+        from app.services.project.project_service import ProjectService
 
         self.USER_SERVICE = UserService()
         self.DEPARTMENT_SERVICE = DepartmentService()
         self.ROOM_SERVICE = RoomService()
         self.BUILDING_SERVICE = BuildingService()
+        self.REQUEST_SERVICE = RequestService()
+        self.PROJECT_SERVICE = ProjectService()
+
+    def _setup_vacation_day_calculation_services(self):
+        from app.services.vacation.vacation_day_calculation_service import VacationDayCalculationService
+
+        self.VACATION_DAY_CALCULATION_SERVICE = VacationDayCalculationService(
+            user_service=self.USER_SERVICE
+        )
+
+        from app.services.request.create_request_service import CreateRequestService
+        self.CREATE_REQUEST_SERVICE = CreateRequestService(
+            request_service=self.REQUEST_SERVICE,
+            user_service=self.USER_SERVICE,
+            project_service=self.PROJECT_SERVICE
+        )

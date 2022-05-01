@@ -26,6 +26,7 @@ class User(Base):
     authorization_token = Column(String)
     manager_id = Column(Integer)
     hire_date = Column(DateTime)
+    is_personnel_officer = Column(Boolean, default=False)
 
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.datetime.utcnow)

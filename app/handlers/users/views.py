@@ -1,7 +1,8 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, g
 
 from app.handlers.users.forms import LoginForm, UserCreateForm, UserIdForm, UserListFetchForm
-from app.handlers.users.serializers import UserResponseSerializer, UserLoginResponseSerializer, UsersResponseSerializer
+from app.handlers.users.serializers import UserResponseSerializer, UserLoginResponseSerializer, UsersResponseSerializer, \
+     UserVacationDayResponseSerializer
 
 from app.main import CONFIG
 from app.utils.response_formatting import response
@@ -85,6 +86,27 @@ def login_user():
     serializer = UserLoginResponseSerializer()
 
     instance = service.fetch(email=form['email'])
+
+    serializer.context = {
+        'departments': [CONFIG.DEPARTMENT_SERVICE.fetch(id=instance.department_id)],
+        'rooms': [CONFIG.ROOM_SERVICE.fetch(id=instance.room_id)],
+        'buildings': [CONFIG.BUILDING_SERVICE.fetch(id=instance.building_id)]
+    }
+
+    result = serializer.dump({
+        'total_count': 1,
+        'instances': [instance]
+    })
+
+    return response(result)
+
+
+@USERS_BLUEPRINT.route("/users/remained_days", methods=['GET'])
+def user_remained_days():
+    service = CONFIG.VACATION_DAY_CALCULATION_SERVICE
+    serializer = UserVacationDayResponseSerializer()
+
+    instance = service.get_remained_days(user_id=g.user_id)
 
     result = serializer.dump({
         'total_count': 1,

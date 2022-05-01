@@ -25,6 +25,9 @@ def before_request():
     if not user and request.path not in ['/users/login']:
         raise UnauthorizedAPIException()
 
+    if user:
+        g.user_id = user.id
+
 
 @app.errorhandler(KeyError)
 def custom_exception(e):

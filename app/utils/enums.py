@@ -27,3 +27,10 @@ class ErrorCodes(BaseEnum):
     unauthorized = 'Unauthorized'
     email_already_exist = 'Email already exist'
     user_not_found = 'User not found'
+
+
+class RequestsStateEnum(BaseEnum):
+    PENDING_APPROVAL = 'pending_approval'
+    APPROVED = 'approved'
+    APPROVED_AND_REGISTERED = 'approved_and_registered'
+    PENDING_CONFIRMATION = 'pending_confirmation'

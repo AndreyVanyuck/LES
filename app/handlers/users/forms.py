@@ -73,7 +73,7 @@ class UserIdForm(ValidationForm):
 
 
 class UserListFetchForm(ValidationForm):
-    name = fields.String(required=False)
+    search_ = fields.String(required=False, data_key='search')
     email = fields.String(required=False)
     limit_ = fields.Integer(required=False, data_key='limit')
     offset_ = fields.Integer(required=False, data_key='offset')

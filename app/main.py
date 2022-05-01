@@ -18,10 +18,12 @@ class Main:
         from .handlers.departments.views import DEPARTMENTS_BLUEPRINT
         from .handlers.rooms.views import ROOMS_BLUEPRINT
         from .handlers.buildings.views import BUILDINGS_BLUEPRINT
+        from .handlers.requests.views import REQUESTS_BLUEPRINT
 
         self.app.register_blueprint(USERS_BLUEPRINT)
         self.app.register_blueprint(DEPARTMENTS_BLUEPRINT)
         self.app.register_blueprint(ROOMS_BLUEPRINT)
         self.app.register_blueprint(BUILDINGS_BLUEPRINT)
+        self.app.register_blueprint(REQUESTS_BLUEPRINT)
 
         return self.app
