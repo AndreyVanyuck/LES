@@ -34,3 +34,4 @@ class RequestsStateEnum(BaseEnum):
     APPROVED = 'approved'
     APPROVED_AND_REGISTERED = 'approved_and_registered'
     PENDING_CONFIRMATION = 'pending_confirmation'
+    CANCELED = 'canceled'

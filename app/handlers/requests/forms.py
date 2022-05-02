@@ -8,20 +8,26 @@ class RequestCreateForm(ValidationForm):
     request_type = fields.String(required=True, validate=validate.OneOf(['vacation', 'own_expense_leave', 'sick_leave']))
     start_date = fields.Date(required=True)
     end_date = fields.Date(required=True)
-    comment = fields.String()
+    comment = fields.String(allow_none=True)
 
 
-class UserListFetchForm(ValidationForm):
-    search_ = fields.String(required=False, data_key='search')
-    email = fields.String(required=False)
-    limit_ = fields.Integer(required=False, data_key='limit')
-    offset_ = fields.Integer(required=False, data_key='offset')
-    building_id = fields.Integer(required=False)
-    room_id = fields.Integer(required=False)
-    department_id = fields.Integer(required=False)
-    is_manager = fields.Boolean(required=False)
-    sort_ = fields.String(
-        required=False,
-        default='id',
-        data_key='sort'
-    )
+class RequestsListFetchForm(ValidationForm):
+    user_id = fields.String(required=False)
+#     search_ = fields.String(required=False, data_key='search')
+#     email = fields.String(required=False)
+#
+#     building_id = fields.Integer(required=False)
+#     room_id = fields.Integer(required=False)
+#     department_id = fields.Integer(required=False)
+#     is_manager = fields.Boolean(required=False)
+#     sort_ = fields.String(
+#         required=False,
+#         default='id',
+#         data_key='sort'
+#     )
+
+
+class RequestUpdateForm(ValidationForm):
+    start_date = fields.Date(required=True)
+    end_date = fields.Date(required=True)
+    comment = fields.String(allow_none=True)

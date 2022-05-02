@@ -15,6 +15,6 @@ class LeaveRequest(Base):
     start_date = Column(DateTime)
     end_date = Column(DateTime)
     request_type = Column(String)
-    number_of_days = Column(Integer)
+    comment = Column(String)
     state = Column(JSONB, default=[])
 

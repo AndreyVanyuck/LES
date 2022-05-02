@@ -1,6 +1,6 @@
 from flask import Blueprint, request, g
 
-from app.handlers.users.forms import LoginForm, UserCreateForm, UserIdForm, UserListFetchForm
+from app.handlers.users.forms import LoginForm, UserCreateForm, UserIdForm, UserListFetchForm, UserForm
 from app.handlers.users.serializers import UserResponseSerializer, UserLoginResponseSerializer, UsersResponseSerializer, \
      UserVacationDayResponseSerializer
 
@@ -79,6 +79,29 @@ def get_user(pk):
     return response(result)
 
 
+@USERS_BLUEPRINT.route("/users/<pk>", methods=['PATCH'])
+def update_user(pk):
+    form = UserForm().load(request.get_json())
+    service = CONFIG.USER_SERVICE
+    serializer = UserResponseSerializer()
+
+    service.update(pk=pk, **form)
+    instance = service.fetch(id=pk)
+
+    serializer.context = {
+        'departments': [CONFIG.DEPARTMENT_SERVICE.fetch(id=instance.department_id)],
+        'rooms': [CONFIG.ROOM_SERVICE.fetch(id=instance.room_id)],
+        'buildings': [CONFIG.BUILDING_SERVICE.fetch(id=instance.building_id)]
+    }
+
+    result = serializer.dump({
+        'total_count': 1,
+        'instances': [instance]
+    })
+
+    return response(result)
+
+
 @USERS_BLUEPRINT.route("/users/login", methods=['POST'])
 def login_user():
     form = LoginForm().load(request.get_json())
@@ -111,6 +134,18 @@ def user_remained_days():
     result = serializer.dump({
         'total_count': 1,
         'instances': [instance]
+    })
+
+    return response(result)
+
+
+@USERS_BLUEPRINT.route("/users/logout", methods=['POST'])
+def logout_user():
+    serializer = UserLoginResponseSerializer()
+
+    result = serializer.dump({
+        'total_count': 0,
+        'instances': []
     })
 
     return response(result)

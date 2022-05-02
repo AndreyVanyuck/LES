@@ -11,11 +11,13 @@ class CreateRequestService:
     def create(self, **kwargs):
         user = self.user_service.fetch(id=kwargs.get('user_id'))
 
-        state = self._generate_state_value(user)
+        state = self.generate_state_value(user)
 
-        self.request_service.create(**kwargs)
+        request = self.request_service.create(**{'state': state}, **kwargs)
 
-    def _generate_state_value(self, user):
+        return request
+
+    def generate_state_value(self, user):
         payload = {
             'state': RequestsStateEnum.PENDING_APPROVAL.value,
             'current_to_approve': [],
@@ -38,7 +40,7 @@ class CreateRequestService:
         } for _ in personnel_officer]
         payload['next_to_register'] = payload['current_to_approve']
 
-        team_lead_id = self.project_service.fetch(id=user.project_id).leam_lead_id
+        team_lead_id = self.project_service.fetch(id=user.project_id).team_lead_id
         team_lead = self.user_service.fetch(id=team_lead_id)
         manager = self.user_service.fetch(id=user.manager_id)
 
@@ -47,12 +49,12 @@ class CreateRequestService:
             'first_name': team_lead.first_name,
             'last_name': team_lead.last_name,
             'comment': None
-        })
+        }) if team_lead else None
         payload['next_to_approve'].append({
             'id': manager.id,
             'first_name': manager.first_name,
             'last_name': manager.last_name,
             'comment': None
-        })
+        }) if manager else None
 
         return payload

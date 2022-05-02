@@ -6,17 +6,17 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 
 class UserForm(ValidationForm):
-    title = fields.String(required=True, validate=validate.OneOf(['Mr', 'Mrs']))
-    first_name = fields.String(required=True)
-    last_name = fields.String(required=True)
-    first_name_native = fields.String(required=True)
-    last_name_native = fields.String(required=True)
-    middle_name_native = fields.String(required=True)
-    department_id = fields.Integer(required=True)
-    room_id = fields.Integer(required=False)
-    email = fields.Email(required=True)
-    mobile_phone = fields.Integer(required=True)
-    building_id = fields.Integer(required=True)
+    title = fields.String(validate=validate.OneOf(['Mr', 'Ms']))
+    first_name = fields.String()
+    last_name = fields.String()
+    first_name_native = fields.String()
+    last_name_native = fields.String()
+    middle_name_native = fields.String()
+    department_id = fields.Integer()
+    room_id = fields.Integer()
+    email = fields.Email()
+    mobile_phone = fields.Integer()
+    building_id = fields.Integer()
 
     @validates('department_id')
     def validated_department_id(self, value):

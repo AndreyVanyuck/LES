@@ -21,8 +21,9 @@ class UserSerializer(ValidationForm):
     department = fields.Method('get_department')
     is_manager = fields.Boolean()
     manager = fields.Method('get_manager')
-    hire_date = fields.DateTime(format='%Y-%m-%d %H:%M:%S')
+    hire_date = fields.DateTime(format='%Y-%m-%d')
     is_personnel_officer = fields.Boolean()
+    status = fields.Method('get_status')
 
     def get_department(self, obj):
         departments = self.context.get('departments', [])
@@ -67,6 +68,9 @@ class UserSerializer(ValidationForm):
             'address': building.address,
             'country': building.country
         } if building else None
+
+    def get_status(self, obj):
+        return 'active'
 
 
 class VacationDaySerializer(ValidationForm):

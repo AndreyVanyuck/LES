@@ -68,6 +68,7 @@ class BaseConfig:
         from app.services.room.room_service import RoomService
         from app.services.request.request_service import RequestService
         from app.services.project.project_service import ProjectService
+        from app.services.change_history.change_history_service import HistoryLogService
 
         self.USER_SERVICE = UserService()
         self.DEPARTMENT_SERVICE = DepartmentService()
@@ -75,17 +76,25 @@ class BaseConfig:
         self.BUILDING_SERVICE = BuildingService()
         self.REQUEST_SERVICE = RequestService()
         self.PROJECT_SERVICE = ProjectService()
+        self.HISTORY_LOG_SERVICE = HistoryLogService()
 
     def _setup_vacation_day_calculation_services(self):
         from app.services.vacation.vacation_day_calculation_service import VacationDayCalculationService
+        from app.services.request.create_request_service import CreateRequestService
+        from app.services.request.update_request_service import UpdateRequestService
 
         self.VACATION_DAY_CALCULATION_SERVICE = VacationDayCalculationService(
             user_service=self.USER_SERVICE
         )
 
-        from app.services.request.create_request_service import CreateRequestService
         self.CREATE_REQUEST_SERVICE = CreateRequestService(
             request_service=self.REQUEST_SERVICE,
             user_service=self.USER_SERVICE,
             project_service=self.PROJECT_SERVICE
+        )
+        self.UPDATE_REQUEST_SERVICE = UpdateRequestService(
+            request_service=self.REQUEST_SERVICE,
+            user_service=self.USER_SERVICE,
+            history_log_service=self.HISTORY_LOG_SERVICE,
+            create_request_service=self.CREATE_REQUEST_SERVICE
         )
