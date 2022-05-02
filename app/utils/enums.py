@@ -35,3 +35,10 @@ class RequestsStateEnum(BaseEnum):
     APPROVED_AND_REGISTERED = 'approved_and_registered'
     PENDING_CONFIRMATION = 'pending_confirmation'
     CANCELED = 'canceled'
+    DECLINED = 'declined'
+
+
+class RequestTypeEnum(BaseEnum):
+    VACATION = 'vacation'
+    OWN_EXPENSE_LEAVE = 'own_expense_leave'
+    SICK_LEAVE = 'sick_leave'

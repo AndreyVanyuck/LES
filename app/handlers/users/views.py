@@ -124,12 +124,12 @@ def login_user():
     return response(result)
 
 
-@USERS_BLUEPRINT.route("/users/remained_days", methods=['GET'])
-def user_remained_days():
+@USERS_BLUEPRINT.route("/users/remained_days/<pk>", methods=['GET'])
+def user_remained_days(pk):
     service = CONFIG.VACATION_DAY_CALCULATION_SERVICE
     serializer = UserVacationDayResponseSerializer()
 
-    instance = service.get_remained_days(user_id=g.user_id)
+    instance = service.get_remained_days(user_id=pk)
 
     result = serializer.dump({
         'total_count': 1,

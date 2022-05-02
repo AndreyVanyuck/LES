@@ -84,7 +84,8 @@ class BaseConfig:
         from app.services.request.update_request_service import UpdateRequestService
 
         self.VACATION_DAY_CALCULATION_SERVICE = VacationDayCalculationService(
-            user_service=self.USER_SERVICE
+            user_service=self.USER_SERVICE,
+            request_service=self.REQUEST_SERVICE
         )
 
         self.CREATE_REQUEST_SERVICE = CreateRequestService(

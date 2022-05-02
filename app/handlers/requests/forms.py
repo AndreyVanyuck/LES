@@ -1,11 +1,10 @@
-from app.utils.custom_exceptions import BadRequestAPIException, UnauthorizedAPIException
+from app.utils.enums import RequestTypeEnum
 from app.utils.validation_form import ValidationForm
-from marshmallow import fields, validate, Schema, validates, validates_schema
-from app.main import CONFIG
+from marshmallow import fields, validate
 
 
 class RequestCreateForm(ValidationForm):
-    request_type = fields.String(required=True, validate=validate.OneOf(['vacation', 'own_expense_leave', 'sick_leave']))
+    request_type = fields.String(required=True, validate=validate.OneOf(RequestTypeEnum.values()))
     start_date = fields.Date(required=True)
     end_date = fields.Date(required=True)
     comment = fields.String(allow_none=True)

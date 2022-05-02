@@ -1,3 +1,6 @@
+from datetime import datetime
+
+from app.utils.enums import RequestsStateEnum
 from app.utils.validation_form import ValidationForm
 from marshmallow import fields, Schema
 from app.main import CONFIG
@@ -24,6 +27,7 @@ class UserSerializer(ValidationForm):
     hire_date = fields.DateTime(format='%Y-%m-%d')
     is_personnel_officer = fields.Boolean()
     status = fields.Method('get_status')
+    is_absent = fields.Method('get_is_absent')
 
     def get_department(self, obj):
         departments = self.context.get('departments', [])
@@ -69,8 +73,20 @@ class UserSerializer(ValidationForm):
             'country': building.country
         } if building else None
 
-    def get_status(self, obj):
+    @staticmethod
+    def get_status(obj):
         return 'active'
+
+    @staticmethod
+    def get_is_absent(obj):
+        now = datetime.utcnow().strftime('%Y-%m-%d')
+        requests = CONFIG.REQUEST_SERVICE.fetch_all(user_id=obj.id, gte_={'end_date': now}, lte_={'start_date': now})
+
+        requests = [
+            _ for _ in requests
+            if _.state['state'] in [RequestsStateEnum.APPROVED.value, RequestsStateEnum.APPROVED_AND_REGISTERED.value]
+        ]
+        return {'end_date': requests[0].end_date.strftime('%Y-%m-%d'), 'request_type': requests[0].request_type} if requests else None
 
 
 class VacationDaySerializer(ValidationForm):
@@ -81,6 +97,8 @@ class VacationDaySerializer(ValidationForm):
         days_earned = fields.Integer()
         days_left = fields.Integer()
         days_spent = fields.Integer()
+        sick_leave_days = fields.Integer()
+        own_expense_days = fields.Integer()
 
     days_left = fields.Integer()
     periods = fields.Nested(_PeriodsSerializer, many=True, attribute='periods')
