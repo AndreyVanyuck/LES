@@ -11,3 +11,4 @@ class HistoryLog(Base):
     request_id = Column(Integer)
     value = Column(Text)
     created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow)

@@ -10,6 +10,7 @@ class Comment(Base):
     id = Column(BIGINT, autoincrement=True, primary_key=True)
     user_id = Column(Integer, ForeignKey('user.id'))
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.datetime.utcnow)
     comment = Column(String)
     request_id = Column(Integer, ForeignKey('leave_request.id'))
 
