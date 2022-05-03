@@ -1,3 +1,4 @@
+import logging
 import os
 import traceback
 
@@ -18,6 +19,8 @@ cors = CORS(app)
 @app.before_request
 def before_request():
     g.tenant_host = os.environ.get('DB_HOST')
+
+    logging.error(f'tenant_host = {g.tenant_host}')
 
     token = request.headers.get("Authorization-token")
     user = CONFIG.USER_SERVICE.fetch(authorization_token=token)
