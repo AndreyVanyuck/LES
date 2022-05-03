@@ -1,8 +1,6 @@
 import datetime
 
-from sqlalchemy import Column, String, Boolean, DateTime, BIGINT, func, select, case, and_
-from sqlalchemy.dialects.postgresql import ARRAY
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, String, Boolean, DateTime, BIGINT, Integer, ForeignKey
 
 from configs.base import Base
 
@@ -11,15 +9,24 @@ class User(Base):
     __tablename__ = 'user'
 
     id = Column(BIGINT, autoincrement=True, primary_key=True)
-    name = Column(String())
-    surname = Column(String())
+    title = Column(String)
+    first_name = Column(String)
+    last_name = Column(String)
+    first_name_native = Column(String)
+    last_name_native = Column(String)
+    middle_name_native = Column(String)
+    room_id = Column(Integer, ForeignKey('room.id'))
+    building_id = Column(Integer, ForeignKey('building.id'))
+    project_id = Column(Integer, ForeignKey('project.id'))
+    email = Column(String)
+    mobile_phone = Column(Integer)
+    is_admin = Column(Boolean, default=False)
+    is_manager = Column(Boolean, default=False)
+    department_id = Column(Integer, ForeignKey('department.id'))
+    authorization_token = Column(String)
+    manager_id = Column(Integer)
+    hire_date = Column(DateTime)
+    is_personnel_officer = Column(Boolean, default=False)
 
-    is_archived = Column(Boolean(), default=False)
-    labels = Column(ARRAY(String), default=[])
-    created_at = Column(DateTime(), default=datetime.datetime.utcnow)
-    updated_at = Column(DateTime(), default=datetime.datetime.utcnow)
-    users_favorite = Column(ARRAY(String), default=[])
-
-    campaigns = relationship('Campaign', secondary='campaign_w_ad_group_mapping', lazy='select')
-    creatives = relationship('Creative', secondary='creative_w_ad_group_mapping', lazy='select')
-
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.datetime.utcnow)
