@@ -88,6 +88,8 @@ class BaseConfig:
         from app.services.vacation.vacation_day_calculation_service import VacationDayCalculationService
         from app.services.request.create_request_service import CreateRequestService
         from app.services.request.update_request_service import UpdateRequestService
+        from app.services.user.user_list_service import UserListService
+        from app.services.request.user_request_service import UserRequestService
 
         self.VACATION_DAY_CALCULATION_SERVICE = VacationDayCalculationService(
             user_service=self.USER_SERVICE,
@@ -106,9 +108,13 @@ class BaseConfig:
             create_request_service=self.CREATE_REQUEST_SERVICE
         )
 
-        from app.services.user.user_list_service import UserListService
         self.USER_LIST_SERVICE = UserListService(
             user_service=self.USER_SERVICE,
             project_service=self.PROJECT_SERVICE,
             request_service=self.REQUEST_SERVICE
+        )
+
+        self.USER_REQUEST_SERVICE = UserRequestService(
+            request_service=self.REQUEST_SERVICE,
+            user_service=self.USER_SERVICE
         )

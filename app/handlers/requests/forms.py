@@ -31,3 +31,7 @@ class RequestUpdateForm(ValidationForm):
     start_date = fields.Date(required=True)
     end_date = fields.Date(required=True)
     comment = fields.String(allow_none=True)
+
+
+class DeclinedForm(ValidationForm):
+    comment = fields.String(allow_none=True)

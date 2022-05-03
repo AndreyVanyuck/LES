@@ -39,3 +39,13 @@ class RequestSerializer(ValidationForm):
 class RequestResponseSerializer(Schema):
     total_count = fields.Int()
     data = fields.Nested(RequestSerializer, many=True, attribute='instances')
+
+
+class UserRequestSerializer(Schema):
+    require_your_approval = fields.Nested(RequestSerializer, many=True, attribute='require_approval')
+    history = fields.Nested(RequestSerializer, many=True, attribute='history_requests')
+
+
+class UserRequestsResponseSerializer(Schema):
+    total_count = fields.Int()
+    data = fields.Nested(UserRequestSerializer, many=True, attribute='instances')
