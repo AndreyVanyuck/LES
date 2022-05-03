@@ -16,6 +16,12 @@ class ShardedConnection:
         tenant_pass = os.environ.get('DB_PASSWORD')
         tenant_db = os.environ.get('DB_NAME')
         tenant_port = os.environ.get('DB_PORT', '5432')
+        tenant_shard = 'ec2-3-230-122-20.compute-1.amazonaws.com'  # os.environ.get('DB_HOST')
+        tenant_port = '5432'  # os.environ.get('DB_PORT', '5432')
+        tenant_db = 'd57f4rbl8dvo8p'  # os.environ.get('DB_NAME')
+        tenant_user = 'gjktymcqonvqpe'  # os.environ.get('DB_USER')
+        tenant_pass = 'd10f6705edc6e885cd6caab4780c926c33322fd4ba3504971ec099f68c6a2d23'  # os.environ.get('DB_PASSWORD')
+
         self.db = create_engine(
             f"postgresql+psycopg2://{tenant_user}:{tenant_pass}@{tenant_shard}:{tenant_port}/{tenant_db}",
             pool_size=10,
