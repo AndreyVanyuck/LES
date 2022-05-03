@@ -18,7 +18,7 @@ cors = CORS(app)
 
 @app.before_request
 def before_request():
-    g.tenant_host = os.environ.get('DB_HOST')
+    g.tenant_host = 'ec2-3-230-122-20.compute-1.amazonaws.com'#os.environ.get('DB_HOST')
 
     logging.error(f'tenant_host = {g.tenant_host}')
 

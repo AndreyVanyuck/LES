@@ -45,11 +45,11 @@ class BaseConfig:
 
         self.UI_HOST = os.environ.get('UI_HOST')
 
-        self.DB_HOST = os.environ.get('DB_HOST')
-        self.DB_PORT = os.environ.get('DB_PORT', '5432')
-        self.DB_NAME = os.environ.get('DB_NAME')
-        self.DB_USER = os.environ.get('DB_USER')
-        self.DB_PASSWORD = os.environ.get('DB_PASSWORD')
+        self.DB_HOST = 'ec2-3-230-122-20.compute-1.amazonaws.com' #os.environ.get('DB_HOST')
+        self.DB_PORT = '5432' #os.environ.get('DB_PORT', '5432')
+        self.DB_NAME = 'd57f4rbl8dvo8p' #os.environ.get('DB_NAME')
+        self.DB_USER = 'gjktymcqonvqpe' #os.environ.get('DB_USER')
+        self.DB_PASSWORD = 'd10f6705edc6e885cd6caab4780c926c33322fd4ba3504971ec099f68c6a2d23' #os.environ.get('DB_PASSWORD')
         self.SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://{user}:{password}@{host}:{port}/{database}'.format(
             user=self.DB_USER,
             password=self.DB_PASSWORD,
