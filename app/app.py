@@ -12,7 +12,7 @@ from configs.run_config import CONFIG
 
 app = Main().create_app()
 
-# cors = CORS(app, supports_credentials=True, origins=r"(.*){0}".format(CONFIG.UI_HOST))
+cors = CORS(app)
 
 
 @app.before_request
