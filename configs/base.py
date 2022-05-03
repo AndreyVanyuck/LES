@@ -45,7 +45,7 @@ class BaseConfig:
 
         self.UI_HOST = os.environ.get('UI_HOST')
 
-        self.DB_HOST = os.environ.get('DB_HOST')
+        self.DB_HOST = 'ec2-3-230-122-20.compute-1.amazonaws.com' #os.environ.get('DB_HOST')
         self.DB_PORT = os.environ.get('DB_PORT', '5432')
         self.DB_NAME = os.environ.get('DB_NAME')
         self.DB_USER = os.environ.get('DB_USER')
