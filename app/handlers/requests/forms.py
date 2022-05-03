@@ -12,6 +12,7 @@ class RequestCreateForm(ValidationForm):
 
 class RequestsListFetchForm(ValidationForm):
     user_id = fields.String(required=False)
+    grouping = fields.String(required=False, validate=validate.OneOf(['']))
 #     search_ = fields.String(required=False, data_key='search')
 #     email = fields.String(required=False)
 #

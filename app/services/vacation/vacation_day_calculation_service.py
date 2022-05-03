@@ -1,4 +1,4 @@
-from datetime import datetime, date
+from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 from app.utils.enums import RequestTypeEnum, RequestsStateEnum
@@ -15,9 +15,14 @@ class VacationDayCalculationService:
         user = self.user_service.fetch(id=user_id)
 
         periods = self._get_periods(user.hire_date, user_id)
-        days_left = self._get_days_left(periods)
 
-        return {'periods': periods, 'days_left': days_left}
+        return {
+            'periods': periods,
+            'available_vacation_days': self._get_days_left(periods),
+            'vacation_norm': self.VACATION_NORM,
+            'sick_leave_days': self._get_total_sick_leave_days(periods),
+            'own_expense_days': self._get_total_own_expense_days(periods)
+        }
 
     def _get_periods(self, hire_date, user_id):
         today = datetime.today().date()
@@ -76,6 +81,14 @@ class VacationDayCalculationService:
     @staticmethod
     def _get_days_left(periods):
         return sum([_['days_left'] for _ in periods])
+
+    @staticmethod
+    def _get_total_sick_leave_days(periods):
+        return sum([_['sick_leave_days'] for _ in periods])
+
+    @staticmethod
+    def _get_total_own_expense_days(periods):
+        return sum([_['own_expense_days'] for _ in periods])
 
     def _get_days_spent(self, user_id):
         requests = self.request_service.fetch_all(

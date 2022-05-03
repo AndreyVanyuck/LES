@@ -100,13 +100,36 @@ class VacationDaySerializer(ValidationForm):
         sick_leave_days = fields.Integer()
         own_expense_days = fields.Integer()
 
-    days_left = fields.Integer()
+    available_vacation_days = fields.Integer()
+    vacation_norm = fields.Integer()
+    sick_leave_days = fields.Integer()
+    own_expense_days = fields.Integer()
     periods = fields.Nested(_PeriodsSerializer, many=True, attribute='periods')
 
 
 class UsersSerializer(UserSerializer):
     # department = fields.Integer(attribute='department_id')
     manager = fields.Integer(attribute='manager_id')
+    project = fields.Method('get_project')
+    leave_dates = fields.Method('get_leave_dates')
+
+    def get_project(self, obj):
+        projects = self.context.get('projects', [])
+        team_leads = self.context.get('team_leads', [])
+
+        project = next((_ for _ in projects if _.id == obj.project_id), None)
+        team_lead = next((_ for _ in team_leads if _.id == project.team_lead_id), None) if project else None
+
+        return {
+            'id': project.id,
+            'name': project.name,
+            'team_lead': {'id': team_lead.id, 'first_name': team_lead.first_name, 'last_name': team_lead.last_name}
+        } if project else None
+
+    @staticmethod
+    def get_leave_dates(obj):
+        days = CONFIG.VACATION_DAY_CALCULATION_SERVICE.get_remained_days(user_id=obj.id)
+        return days
 
 
 class UserResponseSerializer(Schema):

@@ -105,3 +105,10 @@ class BaseConfig:
             history_log_service=self.HISTORY_LOG_SERVICE,
             create_request_service=self.CREATE_REQUEST_SERVICE
         )
+
+        from app.services.user.user_list_service import UserListService
+        self.USER_LIST_SERVICE = UserListService(
+            user_service=self.USER_SERVICE,
+            project_service=self.PROJECT_SERVICE,
+            request_service=self.REQUEST_SERVICE
+        )

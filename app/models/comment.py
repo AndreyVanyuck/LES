@@ -14,4 +14,8 @@ class Comment(Base):
     comment = Column(String)
     request_id = Column(Integer, ForeignKey('leave_request.id'))
 
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+
 

@@ -81,6 +81,7 @@ class UserListFetchForm(ValidationForm):
     room_id = fields.Integer(required=False)
     department_id = fields.Integer(required=False)
     is_manager = fields.Boolean(required=False)
+    grouping = fields.String(required=False, default='', validate=validate.OneOf(['all', 'on_a_leave', 'require_approval']))
     sort_ = fields.String(
         required=False,
         default='id',

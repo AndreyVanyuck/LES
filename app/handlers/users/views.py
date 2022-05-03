@@ -32,10 +32,14 @@ def create_user():
 @USERS_BLUEPRINT.route("/users", methods=['GET'])
 def get_users():
     form = UserListFetchForm().load(request.args)
-    service = CONFIG.USER_SERVICE
+    service = CONFIG.USER_LIST_SERVICE
     serializer = UsersResponseSerializer()
 
-    instances = service.fetch_all(**form)
+    instances = service.fetch_all(user_id=g.user_id, **form)
+
+    projects = CONFIG.PROJECT_SERVICE.fetch_all(
+        in_and_={'id': list({_.project_id for _ in instances})}
+    )
 
     serializer.context = {
         'departments': CONFIG.DEPARTMENT_SERVICE.fetch_all(
@@ -46,6 +50,10 @@ def get_users():
         ),
         'buildings': CONFIG.BUILDING_SERVICE.fetch_all(
             in_and_={'id': list({_.building_id for _ in instances})}
+        ),
+        'projects': projects,
+        'team_leads': CONFIG.USER_SERVICE.fetch_all(
+            in_and_={'id': list({_.team_lead_id for _ in projects})}
         )
     }
 

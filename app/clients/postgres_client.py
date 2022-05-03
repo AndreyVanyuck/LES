@@ -196,7 +196,6 @@ class PostgresClient:
         return self.pg_db.query(self._get_queryset(*args, **kwargs).exists()).scalar()
 
     def fetch(self, *args, **kwargs):
-        logging.error(CONFIG.PG_DB)
         return self._get_queryset(*args, **kwargs).first()
 
     def fetch_all(self, *args, **kwargs):

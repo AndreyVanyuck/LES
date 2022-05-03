@@ -19,3 +19,7 @@ class LeaveRequest(Base):
     comment = Column(String)
     state = Column(JSONB, default=[])
 
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+
