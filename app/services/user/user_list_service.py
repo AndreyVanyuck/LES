@@ -12,7 +12,8 @@ class UserListService:
 
     def fetch_all(self, user_id,  **kwargs):
         grouping = kwargs.get('grouping')
-        kwargs.pop('grouping')
+        if kwargs.get('grouping'):
+            kwargs.pop('grouping')
 
         if not grouping:
             return self.user_service.fetch_all(**kwargs)
