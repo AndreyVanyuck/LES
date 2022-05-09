@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from app.utils.enums import RequestsStateEnum
+from app.utils.enums import RequestsStateEnum, UserPicture
 from app.utils.validation_form import ValidationForm
 from marshmallow import fields, Schema
 from app.main import CONFIG
@@ -28,6 +28,11 @@ class UserSerializer(ValidationForm):
     is_personnel_officer = fields.Boolean()
     status = fields.Method('get_status')
     is_absent = fields.Method('get_is_absent')
+    avatar = fields.Method('get_avatar')
+
+    @staticmethod
+    def get_avatar(obj):
+        return UserPicture.women.value
 
     def get_department(self, obj):
         departments = self.context.get('departments', [])

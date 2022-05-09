@@ -42,3 +42,7 @@ class RequestTypeEnum(BaseEnum):
     VACATION = 'vacation'
     OWN_EXPENSE_LEAVE = 'own_expense_leave'
     SICK_LEAVE = 'sick_leave'
+
+
+class UserPicture(BaseEnum):
+    women = 'https://sun9-79.userapi.com/s/v1/if2/WgKDJzQkrqrrEvEfzKZmy2CdO3q8qryCT1bnT7mVgedExmDD0AB6d-4A_0V_eyrl0oNDVx9A0jaARLri8tQ3HdjA.jpg?size=860x900&quality=95&type=album'
