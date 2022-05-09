@@ -162,3 +162,30 @@ def logout_user():
     })
 
     return response(result)
+
+
+@USERS_BLUEPRINT.route("/users/managers", methods=['GET'])
+def get_managers():
+    service = CONFIG.USER_SERVICE
+    serializer = UserResponseSerializer()
+
+    instances = service.fetch_all(is_manager=True)
+
+    serializer.context = {
+        'departments': CONFIG.DEPARTMENT_SERVICE.fetch_all(
+            in_and_={'id': list({_.department_id for _ in instances})}
+        ),
+        'rooms': CONFIG.ROOM_SERVICE.fetch_all(
+            in_and_={'id': list({_.room_id for _ in instances})}
+        ),
+        'buildings': CONFIG.BUILDING_SERVICE.fetch_all(
+            in_and_={'id': list({_.building_id for _ in instances})}
+        )
+    }
+
+    result = serializer.dump({
+        'total_count': len(instances),
+        'instances': instances
+    })
+
+    return response(result)
