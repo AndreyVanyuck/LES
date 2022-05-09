@@ -17,6 +17,7 @@ class UserForm(ValidationForm):
     email = fields.Email()
     mobile_phone = fields.Integer()
     building_id = fields.Integer()
+    hire_date = fields.Date()
 
     @validates('department_id')
     def validated_department_id(self, value):

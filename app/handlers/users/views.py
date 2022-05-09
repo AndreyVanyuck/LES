@@ -19,6 +19,11 @@ def create_user():
     form['is_admin'] = False
     instance = service.create(**form)
 
+    serializer.context = {
+        'departments': [CONFIG.DEPARTMENT_SERVICE.fetch(id=instance.department_id)],
+        'rooms': [CONFIG.ROOM_SERVICE.fetch(id=instance.room_id)],
+        'buildings': [CONFIG.BUILDING_SERVICE.fetch(id=instance.building_id)]
+    }
     # TODO send email with password for user
 
     result = serializer.dump({

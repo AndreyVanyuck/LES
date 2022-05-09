@@ -60,7 +60,7 @@ class UserSerializer(ValidationForm):
         return {
             'id': room.id,
             'name': room.room
-        }
+        } if room else None
 
     def get_building(self, obj):
         buildings = self.context.get('buildings', [])
