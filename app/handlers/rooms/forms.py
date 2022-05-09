@@ -3,4 +3,4 @@ from marshmallow import fields
 
 
 class RoomsForm(ValidationForm):
-    building_id = fields.Integer(required=True)
+    building_id = fields.Integer(required=False)
