@@ -1,4 +1,5 @@
 from sqlalchemy import or_
+from sqlalchemy import and_
 
 from app.clients.postgres_client import PostgresClient
 from app.models.user import User
@@ -44,3 +45,10 @@ class UserService(PostgresClient):
         ).select_from(User).outerjoin(team_lead_id_cte, team_lead_id_cte.c.team_lead_id == self.model.id).filter(
             self.model.project_id == project_id
         ).all()
+
+    def _filter_queryset(self, *args, **kwargs):
+        email = kwargs.pop('email', None)
+
+        return super()._filter_queryset(*args, **kwargs).filter(
+            self.model.email.ilike(f'%{email}%') if email else and_()
+        )
