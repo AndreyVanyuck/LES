@@ -19,7 +19,7 @@ class UpdateRequestService:
         self.history_log_service.create(**{'request_id': old_request.id, 'value': json.dumps(value)})
 
         user = self.user_service.fetch(id=user_id)
-        state = self.create_request_service.generate_state_value(user)
+        state = self.create_request_service.generate_state_value(user, old_request.request_type)
 
         self.request_service.update(pk=pk, **{'state': state}, **kwargs)
         new_request = self.request_service.fetch(id=pk)
