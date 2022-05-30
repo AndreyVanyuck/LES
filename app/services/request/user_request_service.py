@@ -86,6 +86,7 @@ class UserRequestService:
         )
         new_state['next_to_approve'].extend(new_state['current_to_approve'])
         new_state['current_to_approve'] = []
+        new_state['current_to_register'] = []
 
         request.state = new_state
         request.request_type = RequestTypeEnum.OWN_EXPENSE_LEAVE.value
