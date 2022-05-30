@@ -126,3 +126,19 @@ def approve_requests(pk):
     })
     # TODO send EMAIL
     return response(result)
+
+
+@REQUESTS_BLUEPRINT.route("/requests/mark_as_own_leave/<pk>", methods=['POST'])
+def mark_as_own_leave_requests(pk):
+    form = DeclinedForm().load(request.get_json())
+    service = CONFIG.USER_REQUEST_SERVICE
+    serializer = RequestResponseSerializer()
+
+    instance = service.mark_as_onw_leave(request_id=pk, approver_id=g.user_id, comment=form.get('comment'))
+
+    result = serializer.dump({
+        'total_count': 1,
+        'instances': [instance]
+    })
+    # TODO send EMAIL
+    return response(result)

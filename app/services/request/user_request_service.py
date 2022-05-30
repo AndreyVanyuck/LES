@@ -1,4 +1,4 @@
-from app.utils.enums import RequestsStateEnum
+from app.utils.enums import RequestsStateEnum, RequestTypeEnum
 
 
 class UserRequestService:
@@ -72,5 +72,25 @@ class UserRequestService:
 
         request.state = new_state
         self.request_service.update(pk=request_id, **{'state': new_state})
+
+        return request
+
+    def mark_as_onw_leave(self, request_id, approver_id, comment):
+        request = self.request_service.fetch(id=request_id)
+        user = self.user_service.fetch(id=approver_id)
+
+        new_state = request.state
+        new_state['state'] = RequestsStateEnum.APPROVED_AND_REGISTERED.value
+        new_state['registered'].append(
+            {'id': user.id, 'comment': comment, 'first_name': user.first_name, 'last_name': user.last_name}
+        )
+        new_state['next_to_approve'].extend(new_state['current_to_approve'])
+        new_state['current_to_approve'] = []
+
+        request.state = new_state
+        request.request_type = RequestTypeEnum.OWN_EXPENSE_LEAVE.value
+        self.request_service.update(
+            pk=request_id, **{'state': new_state, 'request_type': RequestTypeEnum.OWN_EXPENSE_LEAVE.value}
+        )
 
         return request
